@@ -1662,7 +1662,7 @@ define('client/lib/hawkCredentials',['../../components/sjcl/sjcl', './hkdf'], fu
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-define('client/FxAccountClient',['./lib/request', '../components/sjcl/sjcl', './lib/credentials', './lib/hawkCredentials'], function (Request, sjcl, credentials, hawkCredentials) {
+define('client/fxa-client',['./lib/request', '../components/sjcl/sjcl', './lib/credentials', './lib/hawkCredentials'], function (Request, sjcl, credentials, hawkCredentials) {
   
 
   /**
@@ -1758,10 +1758,10 @@ define('client/FxAccountClient',['./lib/request', '../components/sjcl/sjcl', './
 
 
 
-require(["client/FxAccountClient"]);
+require(["client/fxa-client"]);
     //The modules for your project will be inlined above
     //this snippet. Ask almond to synchronously require the
     //module value for 'main' here and return it as the
     //value to use for the public API for the built file.
-    return require('client/FxAccountClient');
+    return require('client/fxa-client');
 }));
