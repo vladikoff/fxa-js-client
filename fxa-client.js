@@ -1524,7 +1524,7 @@ define('client/lib/pbkdf2',['../../components/sjcl/sjcl', '../../components/p/p'
      * @method derive
      * @param  {bitArray} input The password hex buffer.
      * @param  {bitArray} salt The salt string buffer.
-     * @return {bitArray} the derived key bit array.
+     * @return {int} iterations the derived key bit array.
      */
     derive: function(input, salt, iterations, len) {
       var result = sjcl.misc.pbkdf2(input, salt, iterations, len, sjcl.misc.hmac);
