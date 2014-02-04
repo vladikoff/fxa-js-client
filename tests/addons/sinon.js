@@ -3445,7 +3445,8 @@ if (typeof sinon == "undefined") {
             this.dispatchEvent(new sinon.Event("readystatechange"));
 
             switch (this.readyState) {
-                case FakeXMLHttpRequest.DONE:
+              case FakeXMLHttpRequest.DONE:
+                    if (!this.aborted) {
                     this.dispatchEvent(new sinon.Event("load", false, false, this));
                     this.dispatchEvent(new sinon.Event("loadend", false, false, this));
                     this.upload.dispatchEvent(new sinon.Event("load", false, false, this));
@@ -3455,6 +3456,7 @@ if (typeof sinon == "undefined") {
                       this.upload.dispatchEvent(new ProgressEvent("progress", {loaded: 100, total: 100}));
                     }
                     */
+                    }
                     break;
             }
         },
@@ -3516,11 +3518,18 @@ if (typeof sinon == "undefined") {
             this.dispatchEvent(new sinon.Event("loadstart", false, false, this));
         },
 
-        abort: function abort() {
+        abort: function(status, headers, body) {
+            this.setResponseHeaders(headers || {});
+            this.status = typeof status == "number" ? status : 200;
+            this.statusText = FakeXMLHttpRequest.statusCodes[this.status];
             this.aborted = true;
-            this.responseText = null;
+            var resp = body || "";
+            try {
+              resp = JSON.parse(body);
+            } catch (e) {
+            }
+            this.responseText = resp;
             this.errorFlag = true;
-            this.requestHeaders = {};
 
             if (this.readyState > sinon.FakeXMLHttpRequest.UNSENT && this.sendFlag) {
                 this.readyStateChange(sinon.FakeXMLHttpRequest.DONE);

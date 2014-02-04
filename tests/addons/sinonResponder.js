@@ -32,7 +32,11 @@ define([
         console.log('Mock does not exist!');
       }
       if (req && req.respond) {
-        req.respond(mock.status, mock.headers, mock.body);
+        if (mock.status >= 400) {
+          req.abort(mock.status, mock.headers, mock.body);
+        } else {
+          req.respond(mock.status, mock.headers, mock.body);
+        }
       }
     }
   }
