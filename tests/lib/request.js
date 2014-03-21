@@ -5,34 +5,54 @@
 define([
   'intern!tdd',
   'intern/chai!assert',
+  'tests/addons/environment',
   'client/lib/request',
-  'intern/node_modules/dojo/has!host-node?intern/node_modules/dojo/node!xmlhttprequest',
-  'tests/addons/sinonResponder',
   'tests/mocks/request'
-], function (tdd, assert, Request, XHR, SinonResponder, RequestMocks) {
+], function (tdd, assert, Environment, Request, RequestMocks) {
   with (tdd) {
     suite('request module', function () {
+      var env;
+      var respond;
       var client;
-      var requests;
-      var baseUri = 'http://127.0.0.1:9000';
+      var RequestMocks;
+      var request;
 
       beforeEach(function () {
-        var xhr = SinonResponder.useFakeXMLHttpRequest();
-        requests = [];
+        env = new Environment();
+        respond = env.respond;
+        client = env.client;
+        RequestMocks = env.RequestMocks;
+        request = new Request(env.authServerUrl, env.xhr);
 
-        xhr.onCreate = function (xhr) {
-          requests.push(xhr);
-        };
-
-        client = new Request(baseUri, xhr);
+        console.log(env.authServerUrl);
       });
 
-      test('#heartbeat (async)', function () {
-        var heartbeatRequest =  client.send("/__heartbeat__", "GET")
-          .then(function (res) {
-            assert.ok(res);
-          });
-        SinonResponder.respond(requests[0], RequestMocks.heartbeat);
+      test('#heartbeat', function () {
+        var heartbeatRequest = request.send("/__heartbeat__", "GET")
+          .then(
+            function (res) {
+              assert.ok(res);
+            },
+            function (err) {
+              throw err;
+            }
+          );
+        env.respond(env.requests[0], RequestMocks.heartbeat);
+        return heartbeatRequest;
+      });
+
+      test('#unreachable', function () {
+        var request = new Request('http://127.0.0.1:81/', env.xhr);
+        var heartbeatRequest = env.respond(request.send("/unreachable", "GET"), RequestMocks.heartbeat)
+          .then(
+            function (res) {
+              console.log(res);
+              assert.equal(res, '{}');
+            },
+            function (err) {
+              throw err;
+            }
+          );
 
         return heartbeatRequest;
       });
