@@ -5,8 +5,9 @@
 // Learn more about configuring this file at <https://github.com/theintern/intern/wiki/Configuring-Intern>.
 // These default settings work OK for most people. The options that *must* be changed below are the
 // packages, suites, excludeInstrumentation, and (if you want functional tests) functionalSuites.
-define(['intern/lib/args'], function (args) {
+define(['intern'], function (intern) {
 
+  var args = intern.args;
   // define a server to run against
   var server;
 
@@ -24,13 +25,17 @@ define(['intern/lib/args'], function (args) {
     if (server === 'LATEST') {
       server = 'https://api-accounts-latest.dev.lcip.org';
     }
-    console.log('Running against ' + server);
+    if (console) {
+      console.log('Running against ' + server);
+    }
   } else {
-    console.log('Running with mocks...');
+    if (console) {
+      console.log('Running with mocks...');
+    }
   }
 
   return {
-    loader: {
+    loaderOptions: {
       // Packages that should be registered with the loader in each testing environment
       packages: [ { name: 'fxa-js-client', location: 'client' } ],
       map: {
@@ -45,7 +50,7 @@ define(['intern/lib/args'], function (args) {
     functionalSuites: [ ],
     AUTH_SERVER_URL: server,
 
-    excludeInstrumentation: /./
+    excludeInstrumentation: true
 
   };
 

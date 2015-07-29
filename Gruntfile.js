@@ -6,7 +6,7 @@ module.exports = function (grunt) {
   // load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
   // load the Intern tasks
-  grunt.loadNpmTasks('intern-geezer');
+  grunt.loadNpmTasks('intern');
 
   var pkg = grunt.file.readJSON('package.json');
 
